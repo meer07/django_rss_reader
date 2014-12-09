@@ -48,17 +48,16 @@ body {
 
 {% block content %}
 
-
 <div class="container">
-    <form class="form-signin" method="post" action="/login">{% csrf_token %}
+    <form class="form-signin" method="post" action="{% url 'user_manager:login' %}">{% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="user_name" class="sr-only">User Name</label>
-        <input type="text" id="user_name" class="form-control" placeholder="User Name" required autofocus>
+        <label for="user_id" class="sr-only">User Name</label>
+        <input type="text" name="user_id" id="user_id" class="form-control" placeholder="User Name" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <input type="submit" value="login"/>
     </form>
-    <a href="register">ユーザー登録されていない方はこちら</a>
+    <a href="{% url 'user_manager:register' %}">ユーザー登録されていない方はこちら</a>
 </div> <!-- /container -->
 
 {% endblock content %}

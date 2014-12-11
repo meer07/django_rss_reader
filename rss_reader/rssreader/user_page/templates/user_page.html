@@ -7,32 +7,60 @@
 
 {% block content %}
 <div class="container">
-  <form id="feed_url" name="setting">
-    <input type="text" name="site_name" value="サイト名など">
-    <input type="text" name="url" value="URL">
-    <input type="button" name="add" value="追加" onclick="add_list()">
-  </form>
-  <table id="site-list">
-    <tr>
-      <th>サイト一覧</th>
-    </tr>
-    <tr>
-      <td>yahoo</td>
-    </tr>
-  </table>
+  <div class="row"><!-- サイト一覧 -->
+    <div class="col-xs-4">
+      <form id="feed_url" name="setting">
+        <input type="text" name="site_name" value="サイト名など">
+        <input type="text" name="url" value="URL">
+        <input type="button" name="add" value="追加" onclick="add_site_list()">
+      </form>
+      <table id="site-list">
+        <tr>
+          <th>サイト一覧</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div  class="col-xs-8"><!-- feed一覧 -->
+    <table id="rss_feed">
+        <tr>
+          <th>feed一覧</th>
+        </tr>
+      </table>
+  </div>
 </div>
 <script charset="utf-8">
-function add_list(){
+function add_site_list(){
   var table = document.getElementById('site-list');
   var row = table.insertRow(-1);
-  var site_name = document.setting.site_name.value;
-  var url = document.setting.url.value;
-  var textNode = document.createTextNode(site_name);
+  var node = make_node();
   row.appendChild(textNode);
 }
 
-function add_tag(){
+function make_node(){
+  var site_name = document.setting.site_name.value;
+  var url = document.setting.url.value;
+  var aTag = document.createElement("a");
+  aTag.onclick = (function(){
+    $.ajax({
+        type:'POST',
+        dataType:'json',
+        url:'/',
+        data:{"url":url},
+        success:function(data){
+            console.log(data.state);
+            add_feed_list(data.feed);
+        },
+        error: function(xhr, textStatus, error){
+            alert("通信に失敗しました");
+        }
+    });
+  })(url);
+  return aTag;
+}
 
+function add_feed_list(feed){
+    
 }
 </script>
 {% endblock content %}

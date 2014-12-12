@@ -34,8 +34,8 @@ def login(request):
     if user is not None:
         if user.is_active:
             auth_login(request, user)
-            user_page_url = '/user' + str(user_id)
-            return redirect(user_page_url, user_id=user_id)
+            user_page_url = '/user/?user_id=' + user_id
+            return redirect(user_page_url)
         else:
             redirect('/')
     else:

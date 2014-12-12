@@ -4,11 +4,11 @@ import time
 
 class feed_passer():
     feed_list = []
-    def __init__(self,feed_url):
+    def __init__(self, feed_url):
         feed = feedparser.parse(feed_url)
         self.get_feed_list(feed)
 
-    def get_feed_list(self,feed):
+    def get_feed_list(self, feed):
         self.feed_list = []
 
         for e in feed.entries:

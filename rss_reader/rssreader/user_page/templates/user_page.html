@@ -12,12 +12,20 @@
       <form id="feed_url" name="setting">
         <input type="text" name="site_name" value="サイト名など">
         <input type="text" name="url" value="URL">
+        <input type="hidden" name="user_id" value="{ user_id }">
         <input type="button" name="add" value="追加" onclick="add_site_list()">
       </form>
       <table id="site-list">
         <tr>
           <th>サイト一覧</th>
         </tr>
+        {% for site_item in site_items %}
+          <tr>
+            <td>
+              <button onclick="url = { site_item.feed_site_url }; select_feed(url)">{ site_item.feed_site_name }</button>
+            </td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
   </div>
@@ -33,34 +41,72 @@
 function add_site_list(){
   var table = document.getElementById('site-list');
   var row = table.insertRow(-1);
-  var node = make_node();
-  row.appendChild(textNode);
+  var aTag = make_node();
+  row.appendChild(aTag);
 }
 
 function make_node(){
   var site_name = document.setting.site_name.value;
   var url = document.setting.url.value;
-  var aTag = document.createElement("a");
-  aTag.onclick = (function(){
-    $.ajax({
-        type:'POST',
-        dataType:'json',
-        url:'/',
-        data:{"url":url},
-        success:function(data){
-            console.log(data.state);
-            add_feed_list(data.feed);
-        },
-        error: function(xhr, textStatus, error){
-            alert("通信に失敗しました");
-        }
+  var user_id = document.setting.user_id.value
+  var button = document.createElement("button");
+  button.onclick = (function(url){
+      select_feed(url);
     });
   })(url);
-  return aTag;
+
+  add_site_url(user_id, url, site_name);
+
+  return button;
 }
 
 function add_feed_list(feed){
+    var table = document.getElementById('rss_feed');
     
+    for (var i = 0; i < feed.length; i++) {
+      var $title = $("<h3/>").text(feed[i][0]);
+      var $discripstion = $("<h4/>").text(feed[i][1]);
+      var $url_link = $("<a/>");
+      $url_link.href = feed[i][2];
+
+      var row = table.insertRow(-1);
+      var $paragraph = $("<p/>");
+      $paragraph.append($title);
+      $paragraph.append($discripstion);
+      $paragraph.append($url_link);
+      row.appendChild($paragraph);
+    };
+}
+
+function select_feed(url){
+  $.ajax({
+    type:'POST',
+    dataType:'json',
+    url:'/feed',
+    data:{"url":url},
+    success:function(data){
+      console.log("success");
+      add_feed_list(data.feed);
+    },
+    error: function(xhr, textStatus, error){
+      alert("通信に失敗しました");
+    }
+  });
+}
+
+function add_site_url(user_id, url, site_name){
+  $.ajax({
+    type:'POST',
+    dataType:'json',
+    url:'/save',
+    data:{"user_id": user_id, "url": url, "site_name": site_name},
+    success:function(data){
+      console.log("success");
+    },
+    error: function(xhr, textStatus, error){
+      alert("通信に失敗しました");
+    }
+  });
 }
 </script>
 {% endblock content %}

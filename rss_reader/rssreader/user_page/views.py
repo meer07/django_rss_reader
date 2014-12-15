@@ -16,24 +16,27 @@ def user_page(request):
 
 # 追加したurlを保存する
 def save_url(request):
-    user_id = request.POST['user_id']
-    url = request.POST['url']
-    site_name = request.POST['site_name']
+    if request.method == 'POST':
+        user_id = request.POST['user_id']
+        url = request.POST['url']
+        site_name = request.POST['site_name']
 
-    feed = Feed()
-    feed.user_id = user_id
-    feed.feed_site_url = url
-    feed.feed_site_name = site_name
-    feed.save()
+        print user_id
+        print url
+        print site_name
 
-    return HttpResponse(json.dumps({"result": "success"}), content_type='application/json; charset=UTF-8')
+        feed = Feed(user_id=user_id, feed_site_url=url, feed_site_name=site_name)
+        feed.save()
+
+        return HttpResponse(json.dumps({"result": "success"}), content_type='application/json; charset=UTF-8')
 
 
 
 # urlを取得してfeedを収集してjsonで送り返す
 def read_feed(request):
-    url = request.POST['url']
-    passer = feed_passer(feed_url=url)
-    response = json.dumps({'feed': passer.feed_list}, indent=2)
-    return HttpResponse(response, content_type='application/json; charset=UTF-8')
-
+    if request.method == 'POST':
+        url = request.POST['url']
+        print url
+        passer = feed_passer(feed_url=url)
+        response = json.dumps({'feed': passer.feed_list}, indent=2)
+        return HttpResponse(response, content_type='application/json; charset=UTF-8')

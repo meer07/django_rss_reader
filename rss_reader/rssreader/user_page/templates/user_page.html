@@ -1,19 +1,25 @@
-{% extends "base.html" %}
+{% extends "user_base.html" %}
 
 {% block title %}ユーザーページ{% endblock title %}
 
 {% block extrahead %}
+
+<style>
+    body{
+        padding-top: 100px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row"><!-- サイト一覧 -->
     <div class="col-xs-4">
-      <form id="feed_url" name="setting">
+      <form name="feed_url" method="post" action="{% url 'user_page:save_url'%}">{% csrf_token %}
         <input type="text" name="site_name" value="サイト名など">
         <input type="text" name="url" value="URL">
-        <input type="hidden" name="user_id" value="{ user_id }">
-        <input type="button" name="add" value="追加" onclick="add_site_list()">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <button onclick="document.feed_url.submit(); add_site_list();">追加</button>
       </form>
       <table id="site-list">
         <tr>
@@ -22,19 +28,19 @@
         {% for site_item in site_items %}
           <tr>
             <td>
-              <button onclick="url = { site_item.feed_site_url }; select_feed(url)">{ site_item.feed_site_name }</button>
+              <button onclick="url = &quot;{{ site_item.feed_site_url }} &quot;; select_feed(url)">{{ site_item.feed_site_name }}</button>
             </td>
           </tr>
         {% endfor %}
       </table>
     </div>
-  </div>
-  <div  class="col-xs-8"><!-- feed一覧 -->
-    <table id="rss_feed">
-        <tr>
-          <th>feed一覧</th>
-        </tr>
-      </table>
+    <div  class="col-xs-8"><!-- feed一覧 -->
+        <table id="rss_feed">
+            <tr>
+              <th>feed一覧</th>
+            </tr>
+        </table>
+    </div>
   </div>
 </div>
 <script charset="utf-8">
@@ -50,12 +56,7 @@ function make_node(){
   var url = document.setting.url.value;
   var user_id = document.setting.user_id.value
   var button = document.createElement("button");
-  button.onclick = (function(url){
-      select_feed(url);
-    });
-  })(url);
-
-  add_site_url(user_id, url, site_name);
+  button.onclick = 'select_feed("+ url +")';
 
   return button;
 }
@@ -64,44 +65,44 @@ function add_feed_list(feed){
     var table = document.getElementById('rss_feed');
     
     for (var i = 0; i < feed.length; i++) {
-      var $title = $("<h3/>").text(feed[i][0]);
-      var $discripstion = $("<h4/>").text(feed[i][1]);
-      var $url_link = $("<a/>");
-      $url_link.href = feed[i][2];
+      var title = element_factory('h3', feed[i][0]);
+      var discripstion = element_factory('h4', feed[i][1]);
+      var url_link = element_factory('a', '続きを読む');
+      url_link.href = feed[i][2];
 
+      var elements = [title, discripstion, url_link];
+      console.log(elements);
       var row = table.insertRow(-1);
-      var $paragraph = $("<p/>");
-      $paragraph.append($title);
-      $paragraph.append($discripstion);
-      $paragraph.append($url_link);
-      row.appendChild($paragraph);
+      crate_paragraph(row, elements);
     };
 }
+
+function element_factory(tag, text){
+    var node = document.createElement(tag);
+    var node_text = document.createTextNode(text);
+    node.appendChild(node_text);
+    return node;
+}
+
+function crate_paragraph(row,elements){
+    var cell = row.insertCell(-1);
+    for(var i = 0; i < elements.length; i++){
+         var paragraph = document.createElement('p');
+         paragraph.appendChild(elements[i]);
+         cell.appendChild(paragraph);
+     }
+}
+
 
 function select_feed(url){
   $.ajax({
     type:'POST',
     dataType:'json',
-    url:'/feed',
+    url:'{% url 'user_page:read_feed'%}',
     data:{"url":url},
     success:function(data){
       console.log("success");
       add_feed_list(data.feed);
-    },
-    error: function(xhr, textStatus, error){
-      alert("通信に失敗しました");
-    }
-  });
-}
-
-function add_site_url(user_id, url, site_name){
-  $.ajax({
-    type:'POST',
-    dataType:'json',
-    url:'/save',
-    data:{"user_id": user_id, "url": url, "site_name": site_name},
-    success:function(data){
-      console.log("success");
     },
     error: function(xhr, textStatus, error){
       alert("通信に失敗しました");

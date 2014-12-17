@@ -43,6 +43,10 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.for_login{
+    margin-top: 5px;
+}
 </style>
 {% endblock %}
 
@@ -51,7 +55,9 @@ body {
     {% if error == "1" %}
     <div class="alert alert-danger">ユーザー名またはパスワードが入力されていません</div>
     {% elif error == "2" %}
-    <div class="alert alert-danger">このユーザー名はすでに登録されています</div>
+    <div class="alert alert-danger">このユーザー名はすでに登録されています。</div>
+    {% elif error == "3" %}
+    <div class="alert alert-danger">サーバーエラーです。もう一度ご入力ください</div>
     {% endif %}
     <form class="form-signin" method="post" action="{% url 'user_manager:create_user' %}">{% csrf_token %}
         <h2 class="form-signin-heading">ユーザー登録</h2>
@@ -60,6 +66,7 @@ body {
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <input type="submit" value="登録" />
+        <p class="for_login"><a href="{% url 'user_manager:index' %}">ログインはこちら</a></p>
     </form>
 </div> <!-- /container -->
 {% endblock content %}

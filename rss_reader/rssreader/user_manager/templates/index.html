@@ -43,6 +43,10 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.for_register{
+    margin-top: 5px;
+}
 </style>
 {% endblock %}
 
@@ -50,18 +54,18 @@ body {
 
 <div class="container">
     {% if error == "1" %}
-    <div class="alert alert-danger">ユーザー名またはパスワードに誤りがあります</div>
+    <div class="alert alert-danger"><div class="text-center">ユーザー名またはパスワードに誤りがあります</div></div>
     {% elif error == "2" %}
     <div class="alert alert-danger">このユーザー名は無効です</div>
     {% endif %}
     <form class="form-signin" method="post" action="{% url 'user_manager:login' %}">{% csrf_token %}
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading">ログイン</h2>
         <label for="user_id" class="sr-only">User Name</label>
         <input type="text" name="user_id" id="user_id" class="form-control" placeholder="User Name" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <input type="submit" value="login"/>
-        <p><a href="{% url 'user_manager:register' %}">ユーザー登録されていない方はこちら</a></p>
+        <p class="for_register"><a href="{% url 'user_manager:register' %}">ユーザー登録されていない方はこちら</a></p>
     </form>
 </div> <!-- /container -->
 

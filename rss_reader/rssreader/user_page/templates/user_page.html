@@ -8,6 +8,10 @@
     body{
         padding-top: 100px;
     }
+
+    .nav, .navbar{
+        font-size: large;
+    }
 </style>
 {% endblock %}
 
@@ -18,27 +22,29 @@
       <form name="feed_url" method="post" action="{% url 'user_page:save_url'%}">{% csrf_token %}
         <div class="form-group">
           <p><h4>サイト追加</h4></p>
-          <input type="text" name="site_name" value="サイト名など">
-          <input type="text" name="url" value="URL">
+          <label for="site_name" class="sr-only">サイト名など</label>
+          <input type="text" name="site_name" id="site_name" placeholder="サイト名など">
+          <label for="url" class="sr-only">URL</label>
+          <input type="text" name="url" id="url" placeholder="URL">
           <input type="hidden" name="user_id" value="{{ user_id }}">
           <button onclick="document.feed_url.submit(); add_site_list();">追加</button>
         </div>  
       </form>
-      <table id="site-list">
+      <table id="site-list" class="table table-bordered">
         <tr>
           <th><h4>サイト一覧</h4></th>
         </tr>
         {% for site_item in site_items %}
           <tr>
             <td>
-              <button onclick="url = &quot;{{ site_item.feed_site_url }} &quot;; select_feed(url)">{{ site_item.feed_site_name }}</button>
+              <a onclick="url = &quot;{{ site_item.feed_site_url }} &quot;; select_feed(url)">{{ site_item.feed_site_name }}</a>
             </td>
           </tr>
         {% endfor %}
       </table>
     </div>
-    <div  class="col-xs-8"><!-- feed一覧 -->
-        <table id="rss_feed">
+    <div class="col-xs-8"><!-- feed一覧 -->
+        <table id="rss_feed" class="table table-bordered">
             <tr>
               <th><h3>feed一覧</h3></th>
             </tr>
@@ -59,7 +65,7 @@ function make_node(){
   var site_name = document.setting.site_name.value;
   var url = document.setting.url.value;
   var user_id = document.setting.user_id.value
-  var button = document.createElement("button");
+  var button = document.createElement("a");
   button.onclick = 'select_feed("+ url +")';
 
   return button;

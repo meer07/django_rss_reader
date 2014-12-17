@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title%}Logout{% endblock %}
+{% block extrahead %}
+<style type="text/css">
+body{
+	padding-top: 100px;
+	background-color: #eee;
+}
+
+.logout{
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.linking{
+    margin-top: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="logout text-center">
+	    <div class="alert alert-success"><p>ログアウトが完了しました。</p></div>
+        <p class="linking"><a href="{% url 'user_manager:index' %}">ホームへ戻る</a></p>
+        <p class="linking"><a href="{% url 'user_manager:index' %}">別のアカウントでログイン</a></p>
+    </div>
+</div>
+{% endblock %}

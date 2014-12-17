@@ -1,6 +1,6 @@
 #coding:utf-8
 from django.template import RequestContext
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import render_to_response, HttpResponse, redirect
 from user_page.models import Feed
 from user_page.feed_parser import feed_passer
 import json
@@ -21,14 +21,10 @@ def save_url(request):
         url = request.POST['url']
         site_name = request.POST['site_name']
 
-        print user_id
-        print url
-        print site_name
-
         feed = Feed(user_id=user_id, feed_site_url=url, feed_site_name=site_name)
         feed.save()
 
-        return HttpResponse(json.dumps({"result": "success"}), content_type='application/json; charset=UTF-8')
+        return redirect("/user/?user_id="+user_id)
 
 
 

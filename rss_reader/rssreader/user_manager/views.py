@@ -31,7 +31,6 @@ def create_user(request):
 
         if len(user_id) <= 0 or len(password) <= 0:
             return redirect('/register?error=1')
-
         elif User.objects.filter(username=user_id):
             return redirect('/index/register?error=2')
         else:

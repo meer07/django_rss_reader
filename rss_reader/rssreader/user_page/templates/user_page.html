@@ -40,6 +40,10 @@
             <td>
               <a onclick="url = &quot;{{ site_item.feed_site_url }} &quot;; select_feed(url)">{{ site_item.feed_site_name }}</a>
             </td>
+            <td>
+                <a onclick="url = &quot;{{ site_item.feed_site_name }} &quot;; 
+                delete_url(url); delete_row(this);">削除</a>
+            </td>
           </tr>
         {% endfor %}
       </table>
@@ -55,19 +59,21 @@
 </div>
 <script charset="utf-8">
 function add_site_list(){
-
+  var url = document.setting.url.value;
+  var site_name = document.setting.site_name.value;
   var table = document.getElementById('site-list');
   var row = table.insertRow(-1);
-  var aTag = make_node();
-  row.appendChild(aTag);
+  var cell = row.insertCell(-1);
+
+  var feedTag = make_feed_tag(url);
+  var deleteTag = delete_feed_link(site_name);
+  row.appendChild(feedTag);
+  cell.appendChild(deleteTag);
 }
 
-function make_node(){
-  var site_name = document.setting.site_name.value;
-  var url = document.setting.url.value;
-  var user_id = document.setting.user_id.value
+function make_feed_tag(url){
   var button = document.createElement("a");
-  button.onclick = 'select_feed("+ url +")';
+  button.onclick = 'select_feed("' + url + '")';
 
   return button;
 }
@@ -112,11 +118,40 @@ function select_feed(url){
   $.ajax({
     type:'POST',
     dataType:'json',
-    url:'{% url 'user_page:read_feed'%}',
+    url:'{% url 'user_page:read_feed' %}',
     data:{"url":url},
     success:function(data){
       console.log("success");
       add_feed_list(data.feed);
+    },
+    error: function(xhr, textStatus, error){
+      alert("通信に失敗しました");
+    }
+  });
+}
+
+function delete_feed_link(site_name){
+    
+    var button = document.createElement("a");
+    button.onclick = 'delete_url("'+ site_name +'"); delete_row(this);';
+
+    return button;
+}
+
+function delete_row(obj){
+  var tr = obj.parentNode.parentNode;
+  tr.parentNode.deleteRow(tr.sectionRowIndex);
+}
+
+function delete_url(site_name){
+  var user_id = document.feed_url.user_id.value;
+  $.ajax({
+    type:'POST',
+    dataType:'json',
+    url:'{% url 'user_page:delete_url' %}',
+    data:{"user_id": user_id, "site_name": site_name},
+    success:function(data){
+      console.log("success");
     },
     error: function(xhr, textStatus, error){
       alert("通信に失敗しました");

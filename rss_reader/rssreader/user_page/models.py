@@ -7,5 +7,5 @@ class Feed(models.Model):
     feed_site_url = models.CharField(u"登録url", max_length=100)
     feed_site_name = models.CharField(u"サイト名", max_length=100)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.feed_site_name

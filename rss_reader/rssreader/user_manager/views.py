@@ -4,25 +4,37 @@ from django.contrib.auth import login as auth_login
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 # Create your views here.
 
 def index(request):
+
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 
 def register(request):
     return render_to_response('register.html', {}, context_instance=RequestContext(request))
 
-
 def create_user(request):
-    user_id = request.POST['user_id']
-    password = request.POST['password']
+    try:
+        user_id = request.POST['user_id']
+        password = request.POST['password']
 
-    new_user = User.objects.create_user(user_id, None, password)
-    new_user.save()
+        if len(user_id) <= 0 or len(password) <= 0:
 
-    return redirect('/index')
+
+        elif User.objects.filter(username=user_id):
+            return render_to_response('register.html', {"error":"2"}, context_instance=RequestContext(request))
+        else:
+            new_user = User.objects.create_user(username=user_id, email=None, password=password)
+            new_user.save()
+            return redirect('/index')
+    except:
+        return redirect('/register')
+
+
 
 
 def login(request):
@@ -37,6 +49,6 @@ def login(request):
             user_page_url = '/user/?user_id=' + user_id
             return redirect(user_page_url)
         else:
-            redirect('/')
+            return HttpResponseRedirect(index,args=[])
     else:
-        register('/')
+        return render_to_response('index.html', {"error": "2"}, context_instance=RequestContext(request))

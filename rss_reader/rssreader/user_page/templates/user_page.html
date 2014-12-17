@@ -16,14 +16,17 @@
   <div class="row"><!-- サイト一覧 -->
     <div class="col-xs-4">
       <form name="feed_url" method="post" action="{% url 'user_page:save_url'%}">{% csrf_token %}
-        <input type="text" name="site_name" value="サイト名など">
-        <input type="text" name="url" value="URL">
-        <input type="hidden" name="user_id" value="{{ user_id }}">
-        <button onclick="document.feed_url.submit(); add_site_list();">追加</button>
+        <div class="form-group">
+          <p><h4>サイト追加</h4></p>
+          <input type="text" name="site_name" value="サイト名など">
+          <input type="text" name="url" value="URL">
+          <input type="hidden" name="user_id" value="{{ user_id }}">
+          <button onclick="document.feed_url.submit(); add_site_list();">追加</button>
+        </div>  
       </form>
       <table id="site-list">
         <tr>
-          <th>サイト一覧</th>
+          <th><h4>サイト一覧</h4></th>
         </tr>
         {% for site_item in site_items %}
           <tr>
@@ -37,7 +40,7 @@
     <div  class="col-xs-8"><!-- feed一覧 -->
         <table id="rss_feed">
             <tr>
-              <th>feed一覧</th>
+              <th><h3>feed一覧</h3></th>
             </tr>
         </table>
     </div>
@@ -45,6 +48,7 @@
 </div>
 <script charset="utf-8">
 function add_site_list(){
+
   var table = document.getElementById('site-list');
   var row = table.insertRow(-1);
   var aTag = make_node();
@@ -63,10 +67,13 @@ function make_node(){
 
 function add_feed_list(feed){
     var table = document.getElementById('rss_feed');
-    
+    for(var i = 1; i < table.rows.length; i++){
+        table.deleteRow(i);
+    }
+
     for (var i = 0; i < feed.length; i++) {
-      var title = element_factory('h3', feed[i][0]);
-      var discripstion = element_factory('h4', feed[i][1]);
+      var title = element_factory('h4', feed[i][0]);
+      var discripstion = element_factory('h5', feed[i][1]);
       var url_link = element_factory('a', '続きを読む');
       url_link.href = feed[i][2];
 

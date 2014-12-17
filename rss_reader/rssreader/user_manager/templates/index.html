@@ -5,7 +5,7 @@
 {% block extrahead %}
 <style>
 body {
-  padding-top: 40px;
+  padding-top: 100px;
   padding-bottom: 40px;
   background-color: #eee;
 }
@@ -49,6 +49,11 @@ body {
 {% block content %}
 
 <div class="container">
+    {% if error == "1" %}
+    <div class="alert alert-danger">ユーザー名またはパスワードに誤りがあります</div>
+    {% elif error == "2" %}
+    <div class="alert alert-danger">このユーザー名は無効です</div>
+    {% endif %}
     <form class="form-signin" method="post" action="{% url 'user_manager:login' %}">{% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="user_id" class="sr-only">User Name</label>
@@ -56,8 +61,8 @@ body {
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <input type="submit" value="login"/>
+        <p><a href="{% url 'user_manager:register' %}">ユーザー登録されていない方はこちら</a></p>
     </form>
-    <a href="{% url 'user_manager:register' %}">ユーザー登録されていない方はこちら</a>
 </div> <!-- /container -->
 
 {% endblock content %}

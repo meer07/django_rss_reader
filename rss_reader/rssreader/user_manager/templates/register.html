@@ -5,7 +5,7 @@
 {% block extrahead %}
 <style>
 body {
-  padding-top: 40px;
+  padding-top: 100px;
   padding-bottom: 40px;
   background-color: #eee;
 }
@@ -48,8 +48,13 @@ body {
 
 {% block content %}
 <div class="container">
+    {% if error == "1" %}
+    <div class="alert alert-danger">ユーザー名またはパスワードが入力されていません</div>
+    {% elif error == "2" %}
+    <div class="alert alert-danger">このユーザー名はすでに登録されています</div>
+    {% endif %}
     <form class="form-signin" method="post" action="{% url 'user_manager:create_user' %}">{% csrf_token %}
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading">ユーザー登録</h2>
         <label for="user_id" class="sr-only">User Name</label>
         <input type="text" name="user_id" id="user_id" class="form-control" placeholder="User Name" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>

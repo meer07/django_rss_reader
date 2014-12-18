@@ -31,9 +31,9 @@
           <button onclick="document.feed_url.submit(); add_site_list();">追加</button>
         </div>  
       </form>
-      <table id="site-list" class="table table-bordered">
+      <table id="site-list" class="table table-bordered text-center">
         <tr>
-          <th><h4>サイト一覧</h4></th>
+          <th class="text-center"><h4>サイト一覧</h4></th>
         </tr>
         {% for site_item in site_items %}
           <tr>
@@ -80,8 +80,11 @@ function make_feed_tag(url){
 
 function add_feed_list(feed){
     var table = document.getElementById('rss_feed');
-    for(var i = 1; i < table.rows.length; i++){
-        table.deleteRow(i);
+    var rows = parseInt(table.rows.length);
+
+    for(var i = rows; i > 1; i--){
+        table.deleteRow(-1);
+        console.log("deleterow");
     }
 
     for (var i = 0; i < feed.length; i++) {
@@ -91,10 +94,9 @@ function add_feed_list(feed){
       url_link.href = feed[i][2];
 
       var elements = [title, discripstion, url_link];
-      console.log(elements);
       var row = table.insertRow(-1);
       crate_paragraph(row, elements);
-    };
+    }
 }
 
 function element_factory(tag, text){
@@ -113,7 +115,6 @@ function crate_paragraph(row,elements){
      }
 }
 
-
 function select_feed(url){
   $.ajax({
     type:'POST',
@@ -131,10 +132,8 @@ function select_feed(url){
 }
 
 function delete_feed_link(site_name){
-    
-    var button = document.createElement("a");
+    var button = element_factory("a", "削除");
     button.onclick = 'delete_url("'+ site_name +'"); delete_row(this);';
-
     return button;
 }
 
